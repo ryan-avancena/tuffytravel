@@ -1,11 +1,13 @@
 // import Image from "next/image";
-import Request from '../components/request'
+import Request from '../components/request';
+import Globe from '../components/globe';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex-row min-h-screen">
       <p>hi</p>
       <Request/>
+      <Globe/>
     </main>
   );
 }
