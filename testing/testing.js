@@ -35,8 +35,6 @@ async function main() {
         const accessToken = await getAccessToken();
         console.log(accessToken);
 
-        const url = 'https://test.api.amadeus.com/v1/reference-data/locations/pois';
-        
         const latitude = 41.397158;
         const longitude = 2.160873;
         const radius = 1;
