@@ -32,47 +32,47 @@ async function getAccessToken() {
 module.exports = { getAccessToken };
 
 // Usage example
-// async function main() {
-//     try {
-//         const accessToken = await getAccessToken();
-//         console.log(accessToken);
+async function main() {
+    try {
+        const accessToken = await getAccessToken();
+        console.log(accessToken);
 
-//         const latitude = 41.397158;
-//         const longitude = 2.160873;
-//         const radius = 1;
-//         const pageLimit = 5;
-//         const pageOffset = 0;
+        const latitude = 41.397158;
+        const longitude = 2.160873;
+        const radius = 1;
+        const pageLimit = 5;
+        const pageOffset = 0;
 
-//         const authorizationToken = `Bearer ${accessToken}`;
+        const authorizationToken = `Bearer ${accessToken}`;
 
-//         // API endpoint
-//         const airLineUrl = "https://test.api.amadeus.com/v1/reference-data/locations/pois?";
+        // API endpoint
+        const airLineUrl = "https://test.api.amadeus.com/v1/reference-data/locations/pois?";
 
-//         // Request parameters
-//         const params = {
-//             latitude,
-//             longitude,
-//             radius,
-//             categories: ['SIGHTS', 'NIGHTLIFE', 'RESTAURANT', 'SHOPPING']
-//         };
+        // Request parameters
+        const params = {
+            latitude,
+            longitude,
+            radius,
+            categories: ['SIGHTS', 'NIGHTLIFE', 'RESTAURANT', 'SHOPPING']
+        };
 
-//         // Request headers
-//         const headers = {
-//             'Authorization': authorizationToken
-//         };
+        // Request headers
+        const headers = {
+            'Authorization': authorizationToken
+        };
 
-//         // Make the request
-//         axios.get(airLineUrl, { headers, params })
-//             .then(response => {
-//                 console.log(response.data);
-//             })
-//             .catch(error => {
-//                 console.error(error);
-//             });
+        // Make the request
+        axios.get(airLineUrl, { headers, params })
+            .then(response => {
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
 
-//     } catch (error) {
-//         console.error(error)
-//     }
-// }
+    } catch (error) {
+        console.error(error)
+    }
+}
 
-// main();
+main();

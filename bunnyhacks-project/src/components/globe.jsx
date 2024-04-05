@@ -1,7 +1,39 @@
 "use client"
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+const axios = require('axios');
 import Head from 'next/head';
+import Request from './request';
+
+// const clientId = 'r74D0G3vFtnilgL6KNnpWKYmziMpenC9';
+// const clientSecret = 'YGeq04GfAptGMDre';
+
+// // API endpoint
+// const url = "https://test.api.amadeus.com/v1/security/oauth2/token";
+
+// // Request parameters
+// const params = new URLSearchParams();
+// params.append('grant_type', 'client_credentials');
+// params.append('client_id', clientId);
+// params.append('client_secret', clientSecret);
+
+// // Request headers
+// const headers = {
+//     'Content-Type': 'application/x-www-form-urlencoded'
+// };
+
+// // Function to make the request and return the access token
+// async function getAccessToken() {
+//     try {
+//         const response = await axios.post(url, params, { headers });
+//         return response.data.access_token;
+//     } catch (error) {
+//         console.error(error);
+//         throw error; // Re-throw the error to handle it outside of this function if needed
+//     }
+// }
+
+
 
 function Globe() {
     useEffect(() => {
@@ -43,21 +75,66 @@ function Globe() {
             projection: 'globe'
         });
 
-        map.addControl(
-            new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
-            })
-        );
+        const customMarker = document.createElement('div');
+        customMarker.style.backgroundImage = 'url("https://cdn-icons-png.freepik.com/512/347/347436.png")'; 
+        customMarker.style.width = '40px'; // Adjust width as needed
+        customMarker.style.height = '40px'; // Adjust height as needed
+        customMarker.style.backgroundSize = 'contain'; 
+        customMarker.style.backgroundRepeat = 'no-repeat'; 
+        customMarker.style.cursor = 'pointer'; 
+
+        var geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: {
+                element: customMarker, // Assign the custom marker element
+                scale: 3 // Marker scale
+            },
+            flyTo: {
+                zoom: 2
+            }
+        });
+
+        var geolocate = new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true,
+            showUserHeading: true
+            });
+
+        map.addControl(geolocate);
+        map.addControl(geocoder, 'top-left');
         
         map.on('load', () => {
             map.setFog({
                 color: '#feffe0', // Lower atmosphere
                 'high-color': '#00fffb', // Upper atmosphere
                 'horizon-blend': 0.02, // Atmosphere thickness (default 0.2 at low zooms)
-                'space-color': '#ffb8e8', // Background color
+                'space-color': '#f0d0e6', // Background color
                 'star-intensity': 0.6 // Background star brightness (default 0.35 at low zoooms )
-            });
+            });            
+        });
+
+
+        geocoder.on('result', function(e) {
+            // Get the latitude and longitude from the response
+            var latitude = e.result.geometry.coordinates[1];
+            var longitude = e.result.geometry.coordinates[0];
+            
+            console.log(e.result)
+            // Log the latitude and longitude to the console
+            console.log("Latitude:", latitude);
+            console.log("Longitude:", longitude);
+        });
+
+        geolocate.on('geolocate', function(e) {
+            // console.log(e.coords.latitude)
+            var userLatitude = e.coords.latitude;
+            var userLongitude = e.coords.longitude;
+            
+            console.log("User Latitude:", userLatitude);
+            console.log("User Longitude:", userLongitude);
         });
     })
     .catch(error => {
@@ -71,6 +148,7 @@ function Globe() {
         <link href="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css" rel="stylesheet" />
         <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" rel="stylesheet" />
         <div id="map" style={{ width: '100%', height: '100vh' }}></div>
+        {/* <p>{accessToken}</p> */}
         </>
     );
 }
