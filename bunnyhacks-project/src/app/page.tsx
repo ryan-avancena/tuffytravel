@@ -7,7 +7,8 @@ export default function Home() {
     <main className="flex-row min-h-screen">
       <p>hi</p>
       <Request/>
-      <Globe/>
+      <Globe>
+      </Globe>
     </main>
   );
 }
