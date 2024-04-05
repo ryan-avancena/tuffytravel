@@ -43,10 +43,23 @@ function Globe() {
             projection: 'globe'
         });
 
+        const customMarker = document.createElement('div');
+        customMarker.style.backgroundImage = 'url("https://cdn-icons-png.freepik.com/512/347/347436.png")'; 
+        customMarker.style.width = '40px'; // Adjust width as needed
+        customMarker.style.height = '40px'; // Adjust height as needed
+        customMarker.style.backgroundSize = 'contain'; 
+        customMarker.style.backgroundRepeat = 'no-repeat'; 
+        customMarker.style.cursor = 'pointer'; 
+        
+        // Initialize MapboxGeocoder with the custom marker
         map.addControl(
             new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
+                mapboxgl: mapboxgl,
+                marker: {
+                    element: customMarker, // Assign the custom marker element
+                    scale: 3 // Marker scale
+                }
             })
         );
         
@@ -66,8 +79,8 @@ function Globe() {
     }, []);
 
 
-    return (
-        <>
+    return (<>
+        <style></style>
         <link href="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css" rel="stylesheet" />
         <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" rel="stylesheet" />
         <div id="map" style={{ width: '100%', height: '100vh' }}></div>
