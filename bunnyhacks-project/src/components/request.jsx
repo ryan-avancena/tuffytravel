@@ -1,15 +1,15 @@
 "use client"
 
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+const axios = require('axios');
 
-function Request() {
+function RequestToken() {
     const [accessToken, setAccessToken] = useState(null);
 
     useEffect(() => {
         // Define your async function to fetch the access token
         async function fetchAccessToken() {
-            // Replace with your actual client ID and client secret
+            // Replac   e with your actual client ID and client secret
             const clientId = 'r74D0G3vFtnilgL6KNnpWKYmziMpenC9';
             const clientSecret = 'YGeq04GfAptGMDre';
 
@@ -30,24 +30,21 @@ function Request() {
             try {
                 // Make the request to fetch the access token
                 const response = await axios.post(url, params, { headers });
-                // Set the access token state
+                console.log(response)
                 setAccessToken(response.data.access_token);
             } catch (error) {
                 console.error(error);
-                // Handle errors if needed
             }
         }
 
         // Call the fetchAccessToken function when the component mounts
         fetchAccessToken();
+        
+    }, []);
 
-    }, []); // Empty dependency array ensures this effect runs only once when the component mounts
+    console.log(accessToken)
+    return accessToken;
 
-    return (
-        <div>
-            <p>Access Token: {accessToken}</p>
-        </div>
-    );
 }
 
-export default Request;
+export default RequestToken; 

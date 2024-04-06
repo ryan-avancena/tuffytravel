@@ -1,39 +1,7 @@
 "use client"
 
-import { useEffect, useState } from 'react';
-const axios = require('axios');
-import Head from 'next/head';
-import Request from './request';
-
-// const clientId = 'r74D0G3vFtnilgL6KNnpWKYmziMpenC9';
-// const clientSecret = 'YGeq04GfAptGMDre';
-
-// // API endpoint
-// const url = "https://test.api.amadeus.com/v1/security/oauth2/token";
-
-// // Request parameters
-// const params = new URLSearchParams();
-// params.append('grant_type', 'client_credentials');
-// params.append('client_id', clientId);
-// params.append('client_secret', clientSecret);
-
-// // Request headers
-// const headers = {
-//     'Content-Type': 'application/x-www-form-urlencoded'
-// };
-
-// // Function to make the request and return the access token
-// async function getAccessToken() {
-//     try {
-//         const response = await axios.post(url, params, { headers });
-//         return response.data.access_token;
-//     } catch (error) {
-//         console.error(error);
-//         throw error; // Re-throw the error to handle it outside of this function if needed
-//     }
-// }
-
-
+import React, { useEffect } from 'react';
+import RequestToken from './request';
 
 function Globe() {
     useEffect(() => {
@@ -142,13 +110,13 @@ function Globe() {
     });
     }, []);
 
+    const access_token = RequestToken();
 
     return (
         <>
         <link href="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css" rel="stylesheet" />
         <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" rel="stylesheet" />
         <div id="map" style={{ width: '100%', height: '100vh' }}></div>
-        {/* <p>{accessToken}</p> */}
         </>
     );
 }
