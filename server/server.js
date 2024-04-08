@@ -47,42 +47,42 @@ app.get('/airport-data', (req, res) => {
   });
 });
 
-app.get('/fetchAirlineData', async (req, res) => {
+async function getFlightData(pDepartureAirport, pArrivalAirport, pDate) {
     try {
-        const { departureAirport , arrivalAirport, date } = req.body;
-
         const accessToken = await getAccessToken();
         const authorizationToken = `Bearer ${accessToken}`;
-
-        const airLineUrl = "https://test.api.amadeus.com/v2/shopping/flight-offers";
-        
-        console.log(departureAirport , arrivalAirport, date)
-        const params = {
-            originLocationCode: departureAirport,
-            destinationLocationCode: arrivalAirport,
-            departureDate: date,
-            adults: 1,
-            nonStop: false,
-            max :200
-        };
-
-        const headers = {
-            'Authorization': authorizationToken
-        };
-
-        console.log("auth token: ", authorizationToken)
-        console.log("params : " ,params)
-        console.log(headers)
-
-        // Make the request to Amadeus API
-        const response = await axios.get(airLineUrl, { headers, params });
-
-        res.status(200).send(response.data);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error occurred while fetching data from Amadeus API');
+    
+        const response = await axios.get('https://test.api.amadeus.com/v2/shopping/flight-offers', {
+            headers: {
+                Authorization : authorizationToken
+            },
+            params: {
+                originLocationCode: pDepartureAirport,
+                destinationLocationCode: pArrivalAirport,
+                departureDate: pDate,
+                adults: 1,
+                nonStop: false,
+                max :200
+            },
+        });
+        return response.data;
+    } catch (e) {
+        console.error('error: ', e);
+        throw e; // Rethrow error to handle it in the calling function
     }
+}
+
+app.get('/fetchAirlineData', async (req, res) => {
+    // try {
+    const { departureAirport , arrivalAirport, date } = req.query;
+
+    console.log("server.js: ", departureAirport , arrivalAirport, date)
+
+    const flights = await getFlightData(departureAirport,arrivalAirport,date);
+    res.json(flights);
+
 });
+
 
 app.listen(port, () => {
   console.log(`Server is listening at http://localhost:${port}`);

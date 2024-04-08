@@ -110,10 +110,13 @@ function FindAirports({ onDepartureSelected, onArrivalSelected  }) {
         console.log('Current date:', formattedDate);
 
         try {
+            console.log(departureAirport.code,arrivalAirport.code,formattedDate)
             const response = await axios.get('http://localhost:5000/fetchAirlineData', {
-                departureAirport: departureAirport.code,
-                arrivalAirport: arrivalAirport.code,
-                date: formattedDate
+                params: {
+                    departureAirport: departureAirport.code,
+                    arrivalAirport: arrivalAirport.code,
+                    date: formattedDate
+                }
             });
             console.log(response.data)
             setFlightData(response.data); // Update flight data state
@@ -123,7 +126,7 @@ function FindAirports({ onDepartureSelected, onArrivalSelected  }) {
     };
 
     return (
-        <div>
+        <div className='searchBox'>
             <p>Select an Airport (Departure)</p>
             <Autocomplete
                 sx={{
@@ -150,9 +153,8 @@ function FindAirports({ onDepartureSelected, onArrivalSelected  }) {
                     onChange={(newDate) => setSelectedDate(newDate)} 
                 />
             </LocalizationProvider>
-
+            
             <Button onClick={handleFormSubmit}>Submit</Button>
-
 
         </div>
       );
