@@ -30,7 +30,7 @@ function RequestToken() {
             try {
                 // Make the request to fetch the access token
                 const response = await axios.post(url, params, { headers });
-                console.log(response)
+                // console.log(response)
                 setAccessToken(response.data.access_token);
             } catch (error) {
                 console.error(error);
