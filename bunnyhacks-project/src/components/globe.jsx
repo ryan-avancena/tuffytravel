@@ -3,6 +3,7 @@
 import React, { useRef,useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import FindAirports from './FindAirports';
+// import RequestToken from './request'
 
 function Globe() {
 
@@ -10,8 +11,19 @@ function Globe() {
     const [marker, setMarker] = useState(null);
     const [coordinates, setCoordinates] = useState(null);
 
+    const [departureSelected, setDepartureSelected] = useState(null);
+    const [arrivalSelected, setArrivalSelected] = useState(null);
+
+    const handleDepartureSelected = (lat, lng) => {
+        console.log("Departure (Globe.jsx) : ", lat, lng);
+        const departureCoods = {lat,lng}
+        setDepartureSelected(departureCoods)
+    }
+
     const handleArrivalSelected = (lat, lng) => {
         console.log("Arrival (Globe.jsx) : ", lat, lng);
+        const arrivalCoods = {lat,lng}
+        setArrivalSelected(arrivalCoods)
         if (map) {
             map.flyTo({ center: [lng, lat], zoom: 2 }); // Pan to the selected coordinates
     
@@ -40,6 +52,7 @@ function Globe() {
         }
     };
 
+    /* FOR THE GLOBE */
     useEffect(() => {
         mapboxgl.accessToken = 'pk.eyJ1IjoicmF2YW5jZW5hIiwiYSI6ImNsdDgwYjk0YTA1dWwycW9nbzhrYmVnaHQifQ.rIV6DS6E8ss6uqdDO1am-Q';
 
@@ -92,10 +105,16 @@ function Globe() {
         };
     }, []);
 
+    // function fetchFlights() {
+
+    // }
+
     return (
         <>
-        <FindAirports onArrivalSelected={handleArrivalSelected} />
+        {/* {console.log("globe.jsx: ",departureSelected, arrivalSelected)} */}
+        <FindAirports onDepartureSelected={handleDepartureSelected} onArrivalSelected={handleArrivalSelected} />
         <div id="map" style={{ width: '100%', height: '100vh' }}></div>
+
         </>
     );
 }

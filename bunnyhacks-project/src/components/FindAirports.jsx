@@ -1,15 +1,26 @@
 import React, { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-function FindAirports({ onArrivalSelected  }) {
+import RequestToken from './request'
+
+import './FindAirports.css'
+
+
+function FindAirports({ onDepartureSelected, onArrivalSelected  }) {
     const [airports, setAirports] = useState(null); // State to store airport data
     const [departureAirport, setDepartureAirport] = useState(null);
     const [arrivalAirport, setArrivalAirport] = useState(null);
     const [isSelectDisabled, setIsSelectDisabled] = useState(true);
+    const [selectedDate, setSelectedDate] = useState(dayjs('2024-04-07'));
+    const [flightData, setFlightData] = useState(null);
 
     useEffect(() => {
     const fetchAirports = async () => {
@@ -71,6 +82,8 @@ function FindAirports({ onArrivalSelected  }) {
     const handleDepartureChange = (event, newValue) => {
         setDepartureAirport(newValue);
         console.log("handle departure change:", newValue)
+        onDepartureSelected(newValue.lat, newValue.lng)
+        setIsSelectDisabled(false);
         // console.log(newValue); // Log the selected airport
     };
 
@@ -82,33 +95,65 @@ function FindAirports({ onArrivalSelected  }) {
         setIsSelectDisabled(false); // Enable the select button when an option is chosen
     };
 
-
-    const handleFormSubmit = () => {
+    const handleFormSubmit = async () => {
         console.log("Departure Latitude:", departureAirport.lat);
         console.log("Departure Longitude:", departureAirport.lng);
         console.log("Arrival Latitude:", arrivalAirport.lat);
         console.log("Arrival Longitude:", arrivalAirport.lng);
+        console.log('')
+
+        console.log("Departure Airport: ", departureAirport.code)
+        console.log("Arrival Airport: ", arrivalAirport.code)
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString('en-CA'); // Format: YYYY-MM-DD
+        console.log('Current date:', formattedDate);
+
+        try {
+            const response = await axios.get('http://localhost:5000/fetchAirlineData', {
+                departureAirport: departureAirport.code,
+                arrivalAirport: arrivalAirport.code,
+                date: formattedDate
+            });
+            console.log(response.data)
+            setFlightData(response.data); // Update flight data state
+        } catch (error) {
+            console.error('Error fetching flight data:', error);
+        }
     };
 
     return (
         <div>
-          <p>Select an Airport (Departure)</p>
-          <Autocomplete
-            options={options}
-            getOptionLabel={(option) => option.label}
-            renderInput={(params) => <TextField {...params} label="Select an airport" />}
-            onChange={handleDepartureChange}
-          />
-    
-          <p>Select an Airport (Arrival):</p>
-          <Autocomplete
-            options={options}
-            getOptionLabel={(option) => option.label}
-            renderInput={(params) => <TextField {...params} label="Select an airport" />}
-            onChange={handleArrivalChange}
-          />
-    
-          <Button onClick={handleFormSubmit}>Submit</Button>
+            <p>Select an Airport (Departure)</p>
+            <Autocomplete
+                sx={{
+                    width: '1000px',
+                }}
+                options={options}
+                getOptionLabel={(option) => option.label}
+                renderInput={(params) => <TextField {...params} label="Select an airport" />}
+                onChange={handleDepartureChange}
+            />
+        
+            <p>Select an Airport (Arrival):</p>
+            <Autocomplete
+                options={options}
+                getOptionLabel={(option) => option.label}
+                renderInput={(params) => <TextField {...params} label="Select an airport" />}
+                onChange={handleArrivalChange}
+            />
+
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker 
+                    label="Select Date" 
+                    value={selectedDate} 
+                    onChange={(newDate) => setSelectedDate(newDate)} 
+                />
+            </LocalizationProvider>
+
+            <Button onClick={handleFormSubmit}>Submit</Button>
+
+
         </div>
       );
 }
